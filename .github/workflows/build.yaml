@@ -1,0 +1,22 @@
+name: Build Project
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build bot project
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.x"
+          cache: true
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build EventsPlannerBot.csproj --configuration Release --no-restore
+      - name: Build Scheduler
+        run: dotnet build EventsPlannerBot.csproj --configuration Release --no-restore -p:StartupObject=CalendarPlannerScheduler.Program
